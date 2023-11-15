@@ -1,5 +1,6 @@
 package com.example.pizzaapp
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -59,6 +60,41 @@ class DatabaseHelper (var context: Context): SQLiteOpenHelper(
             return true
         else
             return false
+    }
+
+    fun addAccount(email:String, name:String, level:String, password:String){
+        val db = this.readableDatabase
+
+        val values = ContentValues()
+        values.put(COLUMN_EMAIL, email)
+        values.put(COLUMN_NAME, name)
+        values.put(COLUMN_LEVEL, level)
+        values.put(COLUMN_PASSWORD, password)
+
+        db.insert(TABLE_ACCOUNT, null, values)
+        db.close()
+    }
+
+    fun checkData(email:String):String{
+        val colums = arrayOf(COLUMN_NAME)
+        val db = this.readableDatabase
+        val selection = "$COLUMN_EMAIL =?
+        val selectionArgs = arrayOf(email)
+        var name:String = " "
+         val cursor = db.query(TABLE_ACCOUNT,
+         colums,
+         selection,
+         selectionArgs,
+         null,
+         null,
+         null)
+
+        if (cursor.moveToFirst()){
+            name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
+        }
+        cursor.close()
+        db.close()
+        return name
     }
 
 }

@@ -26,6 +26,13 @@ class LoginActivity : AppCompatActivity() {
 
             val databaseHelper = DatabaseHelper(this)
 
+            val data:String = databaseHelper.checkData("rezayudha2702@students.amikom.ac.id")
+            Toast.makeText(this@LoginActivity, "Result : " + data,
+                Toast.LENGTH_SHORT).show()
+            if(data == null){
+                databaseHelper.addAccount("rezayudha2702@students.amikom.ac.id")
+            }
+
             val email = txtUsername.text.toString().trim()
             val password = txtPassword.text.toString().trim()
 
