@@ -26,11 +26,12 @@ class LoginActivity : AppCompatActivity() {
 
             val databaseHelper = DatabaseHelper(this)
 
-            val data:String = databaseHelper.checkData("rezayudha2702@students.amikom.ac.id")
+            val data:String = databaseHelper.checkData("stevi.ema@amikom.ac.id")
             Toast.makeText(this@LoginActivity, "Result : " + data,
                 Toast.LENGTH_SHORT).show()
             if(data == null){
-                databaseHelper.addAccount("rezayudha2702@students.amikom.ac.id")
+                databaseHelper.addAccount("stevi.ema@amikom.ac.id",
+                "Stevi Ema W", "Cashier", "12345")
             }
 
             val email = txtUsername.text.toString().trim()

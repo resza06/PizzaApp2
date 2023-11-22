@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.widget.Toast
 
 class DatabaseHelper (var context: Context): SQLiteOpenHelper(
     context,DATABASE_NAME,null,DATABASE_VERSION
@@ -71,14 +72,22 @@ class DatabaseHelper (var context: Context): SQLiteOpenHelper(
         values.put(COLUMN_LEVEL, level)
         values.put(COLUMN_PASSWORD, password)
 
-        db.insert(TABLE_ACCOUNT, null, values)
+       val result = db.insert(TABLE_ACCOUNT, null, values)
+
+        if (result==(0).toLong()){
+            Toast.makeText(context, "Register Failed", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            Toast.makeText(context, "Register Succes, " +
+            "please login using your new account", Toast.LENGTH_SHORT).show()
+        }
         db.close()
     }
 
     fun checkData(email:String):String{
         val colums = arrayOf(COLUMN_NAME)
         val db = this.readableDatabase
-        val selection = "$COLUMN_EMAIL =?
+        val selection = "$COLUMN_EMAIL = ?"
         val selectionArgs = arrayOf(email)
         var name:String = " "
          val cursor = db.query(TABLE_ACCOUNT,
