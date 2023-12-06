@@ -2,10 +2,13 @@ package com.example.pizzaapp
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.graphics.Bitmap
 import android.widget.Toast
 import com.example.pizzaapp.model.MenuModel
+import java.io.ByteArrayOutputStream
 
 class DatabaseHelper (var context: Context): SQLiteOpenHelper(
     context,DATABASE_NAME,null,DATABASE_VERSION
@@ -126,6 +129,62 @@ class DatabaseHelper (var context: Context): SQLiteOpenHelper(
         return name
     }
 
-    fun addMenu(menu:MenuModel)
+    fun addMenu(menu:MenuModel){
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(COLUMN_ID_MENU, menu.id)
+        values.put(COLUMN_NAMA_MENU, menu.name)
+        values.put(COLUMN_PRICE_MENU, menu.price)
+        //prepare image
+        val byteOutputStream = ByteArrayOutputStream()
+        val imageInByte:ByteArray
+        menu.image.compress(Bitmap.CompressFormat.JPEG,100,byteOutputStream)
+        imageInByte = byteOutputStream.toByteArray()
+        values.put(COLUMN_IMAGE, imageInByte)
+
+        val result = db.insert(TABLE_MENU,null, values)
+        //show message
+        if (result==(0).toLong()){
+            Toast.makeText((context,"Add menu Failed",Toast.LENGTH_SHORT).show()
+        }
+        else {
+            Toast.makeText((context,"Add menu Success",Toast.LENGTH_SHORT).show()
+        }
+        db.close()
+    }
+
+    fun showMenu():ArrayList<MenuModel>{
+        val listModel = ArrayList<MenuModel>()
+        val db = this.readableDatabase
+        var cursor:Cursor?=null
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_MENU, null)
+        }
+    }
+
+    fun editMenu(menu:MenuModel){
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(COLUMN_ID_MENU, menu.id)
+        values.put(COLUMN_NAMA_MENU, menu.name)
+        values.put(COLUMN_PRICE_MENU, menu.price)
+        //prepare image
+        val byteOutputStream = ByteArrayOutputStream()
+        val imageInByte:ByteArray
+        menu.image.compress(Bitmap.CompressFormat.JPEG,100,byteOutputStream)
+        imageInByte = byteOutputStream.toByteArray()
+        values.put(COLUMN_IMAGE, imageInByte)
+
+        val result = db.update(TABLE_MENU, values, COLUMN_ID_MENU +" = ? ", arrayOf(menu.id.toString())).toLong()
+        //show message
+        if (result==(0).toLong()){
+            Toast.makeText((context,"Add menu Failed",Toast.LENGTH_SHORT).show()
+        }
+        else {
+            Toast.makeText((context,"Add menu Success",Toast.LENGTH_SHORT).show()
+        }
+        db.close()
+    }
+
 
 }
